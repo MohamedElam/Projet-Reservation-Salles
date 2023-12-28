@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -26,7 +25,7 @@ public class ClientService {
         }
     }
 
-    public Optional<Client> findById(Long aLong) {
+    public Client findById(Long aLong) {
         return cd.findById(aLong);
     }
 
