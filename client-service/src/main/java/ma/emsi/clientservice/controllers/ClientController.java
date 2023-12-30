@@ -26,9 +26,9 @@ public class ClientController {
     }
     @GetMapping("id/{id}")
     public ResponseEntity<Client> findById(@PathVariable Long id) {
-        Client client = cs.findById(id);
-        if (client != null) {
-            return ResponseEntity.ok(client);
+        Optional<Client> client = cs.findById(id);
+        if (client.isPresent()) {
+            return ResponseEntity.ok(client.get());
         } else {
             return ResponseEntity.notFound().build();
         }
