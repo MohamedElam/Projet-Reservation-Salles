@@ -35,22 +35,34 @@ public class ReservationService {
         return reservationDao.findAll();
     }
 
-    public Reservation save(Reservation reservation) {
-        return reservationDao.save(reservation);
+    public Reservation save(Reservation newReservation) throws Exception {
+        List<Reservation> existingReservations = findAll();
+        for(Reservation reservation : existingReservations) {
+            if(newReservation.getSalle_id() == reservation.getSalle_id()) {
+                if(newReservation.getDateReservation().isEqual(reservation.getDateReservation())) {
+                    if(!( (newReservation.getStartHour().isBefore(reservation.getStartHour()) && newReservation.getEndHour().isBefore(reservation.getStartHour()))
+                    || (newReservation.getStartHour().isAfter(reservation.getEndHour()) && newReservation.getEndHour().isAfter(reservation.getEndHour())) )) {
+                        throw new Exception("Reservation invalid, time conflict");
+                    }
+                }
+            }
+        }
+        return reservationDao.save(newReservation);
     }
 
-    public Optional<Reservation> findById(Long aLong) {
-        return reservationDao.findById(aLong);
+    public Reservation findById(Long id) throws Exception {
+        Optional<Reservation> result = reservationDao.findById(id);
+        if(result.isPresent()) {
+            Reservation reservation = result.get();
+            reservation.setClient(clientRestClient.findClientById(reservation.getClient_id()));
+            reservation.setSalle(salleRestClient.findSalleById(reservation.getSalle_id()));
+            return reservation;
+        }
+        throw new Exception("Reservation does not exist");
     }
 
     public void deleteById(Long aLong) {
         reservationDao.deleteById(aLong);
     }
 
-//    private boolean checkConflictReservation(Reservation newReservation) {
-//        List<Reservation> existingReservations = findAll();
-//
-//
-//
-//    }
 }

@@ -1,5 +1,6 @@
 package ma.emsi.reservationservice.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 import ma.emsi.reservationservice.model.Client;
 import ma.emsi.reservationservice.model.Salle;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -17,14 +19,11 @@ public class Reservation {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateReservation;
+    private LocalDate dateReservation;
 
-    @Temporal(TemporalType.TIME)
-    private Date startHour;
+    private LocalTime startHour;
 
-    @Temporal(TemporalType.TIME)
-    private Date endHour;
+    private LocalTime endHour;
 
     private Long client_id;
     @Transient
