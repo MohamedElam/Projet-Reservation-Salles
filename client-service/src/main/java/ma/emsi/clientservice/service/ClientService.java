@@ -26,8 +26,12 @@ public class ClientService {
         }
     }
 
-    public Optional<Client> findById(Long aLong) {
-        return cd.findById(aLong);
+    public Client findById(Long id) throws Exception {
+        Optional<Client> result = cd.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        }
+        throw new Exception("Client does not exist, invalid id");
     }
 
     public void deleteById(Long aLong) {

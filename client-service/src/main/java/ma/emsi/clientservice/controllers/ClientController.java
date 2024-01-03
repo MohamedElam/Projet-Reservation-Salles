@@ -3,6 +3,7 @@ package ma.emsi.clientservice.controllers;
 
 import ma.emsi.clientservice.bean.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ma.emsi.clientservice.service.ClientService;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/clients")
+@RequestMapping("/api/clients")
 public class ClientController {
 
     private final ClientService cs;
@@ -20,34 +21,37 @@ public class ClientController {
         this.cs = clientService;
     }
 
-    @GetMapping()
-    public List<Client> findAll() {
-        return cs.findAll();
+    @GetMapping
+    public ResponseEntity<List<Client>> findAll() {
+        List<Client> clients = cs.findAll();
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
+
     @GetMapping("id/{id}")
     public ResponseEntity<Client> findById(@PathVariable Long id) {
-        Optional<Client> client = cs.findById(id);
-        if (client.isPresent()) {
-            return ResponseEntity.ok(client.get());
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            Client client = cs.findById(id);
+            return new ResponseEntity<>(client, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("")
-    public int save(@RequestBody Client client) {
-        return cs.save(client);
+    @PostMapping
+    public ResponseEntity<Void> save(@RequestBody Client client) {
+        cs.save(client);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping()
-    public void deleteAll() {
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
         cs.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @DeleteMapping("id/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         cs.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
-
 }
