@@ -24,8 +24,12 @@ public class SalleService {
         return salleDao.save(entity);
     }
 
-    public Optional<Salle> findById(Long aLong) {
-        return salleDao.findById(aLong);
+    public Salle findById(Long id) throws Exception {
+        Optional<Salle> result = salleDao.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        }
+        throw new Exception("Salle does not exist, invalid id");
     }
 
     public void deleteById(Long aLong) {
